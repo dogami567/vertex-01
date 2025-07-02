@@ -1,114 +1,246 @@
 # Vertex AI 到 OpenAI API 适配器
 
-这个项目实现了一个简单的API适配器，将Vertex AI的API转换为OpenAI格式的API。这使得原本使用OpenAI API的应用程序可以无缝地切换到Vertex AI，而无需修改代码。
+这个项目实现了一个简单的适配器，将 Vertex AI API（特别是 Gemini 模型）转换为 OpenAI API 格式。
+这允许使用期望 OpenAI API 的工具和服务能够无缝地与 Vertex AI 模型一起使用。
 
-## 功能特点
+## 特性
 
-- 支持OpenAI风格的API端点 `/v1/chat/completions`
-- 支持模型列表查询 `/v1/models`
-- 提供简单的API密钥验证机制
-- 将OpenAI格式的请求转换为Vertex AI格式
-- 将Vertex AI的响应转换回OpenAI格式
+- ✅ 将 OpenAI API 请求转换为 Vertex AI 请求
+- ✅ 支持流式传输（stream）模式，实现打字机效果
+- ✅ 自动映射模型名称（例如 gpt-4o → gemini-2.5-pro）
+- ✅ 支持函数调用（Function calling）功能
+- ✅ 支持视觉模型（Vision models）功能
+- ✅ 简单轻量级设计
+
+## 版本历史
+
+- v0.0.1：基本功能，支持简单对话和流式传输
+- v0.0.2：添加函数调用和视觉模型支持
 
 ## 模型映射
 
-适配器将OpenAI的模型名称映射到Vertex AI的模型:
+| OpenAI 模型名称 | Vertex AI 模型名称 |
+|---------------|-----------------|
+| gpt-4o | gemini-2.5-pro |
+| gpt-4-vision-preview | gemini-2.5-pro-vision |
+| gpt-4-turbo | gemini-2.5-pro |
+| gpt-4 | gemini-2.5-pro |
+| gpt-3.5-turbo | gemini-2.5-flash |
 
-- `gpt-3.5-turbo` → `gemini-1.5-pro`
-- `gpt-4` → `gemini-2.5-pro`
-- `gpt-4o` → `gemini-2.5-pro`
+## 安装与使用
 
-## 安装和设置
+### 前提条件
 
-1. 克隆此仓库:
+1. 设置 Google Cloud 项目
+2. 启用 Vertex AI API
+3. 设置适当的身份验证
+
+### 使用 Docker
 
 ```bash
-git clone https://github.com/yourusername/vertex-openai-adapter.git
-cd vertex-openai-adapter
+# 构建 Docker 镜像
+docker build -t vertex-openai:v0.0.2 .
+
+# 运行容器
+docker run -p 5001:5000 \
+  -v /path/to/your/google_credentials.json:/app/credentials.json \
+  -e GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json \
+  vertex-openai:v0.0.2
 ```
 
-2. 安装依赖:
+### 手动运行
 
 ```bash
+# 安装依赖
 pip install -r requirements.txt
-```
 
-3. 配置Vertex AI认证:
+# 设置环境变量
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/google_credentials.json"
 
-- 配置您的Google Cloud凭据 (您需要安装并配置 [gcloud CLI](https://cloud.google.com/sdk/docs/install))
-- 导出GOOGLE_APPLICATION_CREDENTIALS环境变量:
+# 在Windows上使用
+# $env:GOOGLE_APPLICATION_CREDENTIALS="C:\path\to\your\google_credentials.json"
 
-```bash
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/credentials.json
-```
-
-4. 在`simplest.py`文件中修改:
-   - `PROJECT_ID`: 您的Google Cloud项目ID
-   - `LOCATION`: Vertex AI服务区域
-   - `API_KEY`: 您自定义的API密钥
-
-## 运行适配器
-
-启动适配器服务器:
-
-```bash
+# 运行服务
 python simplest.py
 ```
 
-默认情况下，服务器将在`http://localhost:5000`上运行。
+## API 使用示例
 
-## 使用示例
-
-使用`test_client.py`测试适配器:
-
-```bash
-python test_client.py "这是一个测试问题"
-```
-
-通过API调用:
+### 标准聊天完成（非流式）
 
 ```python
 import requests
+import json
 
-API_BASE = "http://localhost:5000"
-API_KEY = "sk-test123456789"  # 替换为您设置的API密钥
+url = "http://localhost:5001/v1/chat/completions"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer sk-test123456789"  # 任意密钥，实际不会验证
+}
+data = {
+    "model": "gpt-4o",  # 将映射到 gemini-2.5-pro
+    "messages": [
+        {"role": "user", "content": "你好，请介绍一下你自己。"}
+    ]
+}
 
-response = requests.post(
-    f"{API_BASE}/v1/chat/completions",
-    headers={
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    },
-    json={
-        "model": "gpt-3.5-turbo",
-        "messages": [
-            {"role": "system", "content": "你是一个乐于助人的AI助手。"},
-            {"role": "user", "content": "介绍一下北京的历史"}
-        ]
+response = requests.post(url, headers=headers, json=data)
+print(json.dumps(response.json(), indent=2, ensure_ascii=False))
+```
+
+### 流式传输聊天完成
+
+```python
+import requests
+import json
+
+url = "http://localhost:5001/v1/chat/completions"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer sk-test123456789"  # 任意密钥，实际不会验证
+}
+data = {
+    "model": "gpt-4o",  # 将映射到 gemini-2.5-pro
+    "messages": [
+        {"role": "user", "content": "请用诗歌形式描述春天。"}
+    ],
+    "stream": True
+}
+
+response = requests.post(url, headers=headers, json=data, stream=True)
+for line in response.iter_lines():
+    if line:
+        line_text = line.decode('utf-8')
+        if line_text.startswith("data: "):
+            content = line_text[6:]
+            if content == "[DONE]":
+                break
+            try:
+                chunk = json.loads(content)
+                if "choices" in chunk and chunk["choices"]:
+                    delta = chunk["choices"][0].get("delta", {})
+                    if "content" in delta:
+                        print(delta["content"], end="", flush=True)
+            except json.JSONDecodeError:
+                pass
+```
+
+### 函数调用示例
+
+```python
+import requests
+import json
+
+url = "http://localhost:5001/v1/chat/completions"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer sk-test123456789"
+}
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "获取特定位置的天气信息",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "城市名称，例如：北京、上海"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": ["celsius", "fahrenheit"],
+                        "description": "温度单位"
+                    }
+                },
+                "required": ["location"]
+            }
+        }
     }
-)
+]
 
-print(response.json())
+data = {
+    "model": "gpt-4o",
+    "messages": [
+        {"role": "user", "content": "今天北京的天气怎么样？"}
+    ],
+    "tools": tools
+}
+
+response = requests.post(url, headers=headers, json=data)
+result = response.json()
+print(json.dumps(result, indent=2, ensure_ascii=False))
+```
+
+### 视觉模型示例
+
+```python
+import requests
+import json
+import base64
+
+# 读取图像文件并转换为base64
+with open("test_images/test_image.jpg", "rb") as image_file:
+    base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+
+url = "http://localhost:5001/v1/chat/completions"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer sk-test123456789"
+}
+
+data = {
+    "model": "gpt-4-vision-preview",  # 将映射到 gemini-2.5-pro-vision
+    "messages": [
+        {
+            "role": "user", 
+            "content": [
+                {"type": "text", "text": "这张图片里有什么内容？请详细描述。"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/jpeg;base64,{base64_image}"
+                    }
+                }
+            ]
+        }
+    ]
+}
+
+response = requests.post(url, headers=headers, json=data)
+result = response.json()
+print(json.dumps(result, indent=2, ensure_ascii=False))
+```
+
+## 测试脚本
+
+项目包含多个测试脚本，用于验证适配器的各种功能：
+
+- `test_client.py`：测试基本的聊天功能
+- `test_vertexai_direct.py`：直接测试Vertex AI API
+- `test_function_calling.py`：测试函数调用功能
+- `test_vision.py`：测试视觉模型功能
+- `run_all_tests.py`：运行所有测试
+
+要运行测试，请确保适配器正在运行，然后执行：
+
+```bash
+python run_all_tests.py
 ```
 
 ## 限制
 
-这个适配器是一个简化版本，有以下限制:
-
-- 不支持流式输出
-- 不支持函数调用
-- 不支持多轮对话上下文管理
-- Token计数是近似值
-
-## 扩展
-
-您可以扩展此适配器以支持:
-
-- 流式输出 (使用Flask的响应流)
-- 函数调用
-- 完整的对话历史管理
-- 精确的Token计数
+- 目前仅支持基本的聊天完成功能
+- 令牌计数是估算的，不精确
+- 不支持嵌入（embeddings）或编辑功能
 
 ## 许可证
 
-MIT 
+MIT
+
+## 贡献
+
+欢迎提交PR和问题报告！ 

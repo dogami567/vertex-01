@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertex AI 适配器测试面板</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .test-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .result-box {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            margin-right: 5px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            margin-bottom: -1px;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+        }
+        .status-bar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .status-online {
+            background-color: #27ae60;
+        }
+        .status-offline {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vertex AI 到 OpenAI API 适配器测试面板</h1>
+        
+        <div id="status-bar" class="status-bar">
+            正在检查适配器状态...
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="basic">基础对话测试</div>
+            <div class="tab" data-tab="stream">流式对话测试</div>
+            <div class="tab" data-tab="function">函数调用测试</div>
+            <div class="tab" data-tab="vision">视觉模型测试</div>
+        </div>
+
+        <div id="basic" class="tab-content active">
+            <div class="test-section">
+                <h2>基础对话测试</h2>
+                <div class="test-controls">
+                    <button id="run-basic-test">运行测试</button>
+                </div>
+                <div id="basic-result" class="result-box">点击"运行测试"按钮开始测试...</div>
+            </div>
+        </div>
+
+        <div id="stream" class="tab-content">
+            <div class="test-section">
+                <h2>流式对话测试</h2>
+                <div class="test-controls">
+                    <button id="run-stream-test">运行测试</button>
+                </div>
+                <div id="stream-result" class="result-box">点击"运行测试"按钮开始测试...</div>
+            </div>
+        </div>
+
+        <div id="function" class="tab-content">
+            <div class="test-section">
+                <h2>函数调用测试</h2>
+                <div class="test-controls">
+                    <button id="run-function-test">运行测试</button>
+                </div>
+                <div id="function-result" class="result-box">点击"运行测试"按钮开始测试...</div>
+            </div>
+        </div>
+
+        <div id="vision" class="tab-content">
+            <div class="test-section">
+                <h2>视觉模型测试</h2>
+                <div class="test-controls">
+                    <button id="run-vision-test">运行测试</button>
+                    <input type="file" id="image-upload" accept="image/*">
+                </div>
+                <div id="vision-result" class="result-box">点击"运行测试"按钮开始测试...</div>
+                <img id="image-preview" class="image-preview" style="display: none;">
+            </div>
+        </div>
+
+        <hr>
+        <h2>后端自动化测试</h2>
+        <div class="test-section">
+            <button onclick="runAllTests()">运行所有后端测试</button>
+            <p>测试结果将实时显示在下方：</p>
+            <pre id="all-tests-result" style="background-color: #f0f0f0; border: 1px solid #ccc; padding: 10px; min-height: 100px; white-space: pre-wrap;"></pre>
+        </div>
+    </div>
+
+    <script>
+        // 使用代理服务器API配置
+        const API_URL = '/proxy';
+        const API_KEY = 'sk-test123456789';
+
+        // 检查适配器状态
+        async function checkAdapterStatus() {
+            const statusBar = document.getElementById('status-bar');
+            try {
+                const response = await fetch(`${API_URL}/models`, {
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`
+                    }
+                });
+                
+                if (response.ok) {
+                    statusBar.textContent = '✅ 适配器在线，可以进行测试';
+                    statusBar.classList.add('status-online');
+                } else {
+                    statusBar.textContent = '❌ 适配器在线但返回错误：' + response.status;
+                    statusBar.classList.add('status-offline');
+                }
+            } catch (error) {
+                statusBar.textContent = '❌ 适配器离线或无法连接';
+                statusBar.classList.add('status-offline');
+                console.error('连接适配器失败:', error);
+            }
+        }
+
+        // 基础对话测试
+        async function runBasicTest() {
+            const resultBox = document.getElementById('basic-result');
+            const button = document.getElementById('run-basic-test');
+            
+            button.disabled = true;
+            resultBox.innerHTML = '正在测试基础对话...<div class="loading"></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        messages: [
+                            { role: 'user', content: '你好，请用一句话介绍自己。' }
+                        ]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const content = data.choices[0].message.content;
+                    resultBox.innerHTML = `<span class="success">✅ 测试成功!</span>\n\n模型回复:\n${content}`;
+                } else {
+                    resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${error.message}`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // 流式对话测试
+        async function runStreamTest() {
+            const resultBox = document.getElementById('stream-result');
+            const button = document.getElementById('run-stream-test');
+            
+            button.disabled = true;
+            resultBox.innerHTML = '正在测试流式对话...<div class="loading"></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        messages: [
+                            { role: 'user', content: '请用一段简短的诗歌描述春天。' }
+                        ],
+                        stream: true
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${errorText}`;
+                    button.disabled = false;
+                    return;
+                }
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+                let result = '';
+                
+                resultBox.innerHTML = '<span class="success">流式响应:</span>\n';
+                
+                function push() {
+                    reader.read().then(({ done, value }) => {
+                        const chunk = decoder.decode(value, {stream: true});
+                        result += chunk;
+                        resultBox.textContent = result;
+
+                        if (done) {
+                            resultBox.innerHTML = `<span class="success">✅ 流式测试成功!</span>\n\n完整响应:\n${result}`;
+                            return;
+                        }
+                        
+                        push();
+                    });
+                }
+                
+                push();
+            } catch (error) {
+                resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${error.message}`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // 函数调用测试
+        async function runFunctionTest() {
+            const resultBox = document.getElementById('function-result');
+            const button = document.getElementById('run-function-test');
+            
+            button.disabled = true;
+            resultBox.innerHTML = '正在测试函数调用...<div class="loading"></div>';
+            
+            try {
+                const tools = [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "get_weather",
+                            "description": "获取特定位置的天气信息",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "location": {
+                                        "type": "string",
+                                        "description": "城市名称，例如：北京、上海"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "enum": ["celsius", "fahrenheit"],
+                                        "description": "温度单位"
+                                    }
+                                },
+                                "required": ["location"]
+                            }
+                        }
+                    }
+                ];
+                
+                const response = await fetch(`${API_URL}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        messages: [
+                            { role: 'user', content: '今天北京的天气怎么样？' }
+                        ],
+                        tools: tools
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultBox.innerHTML = `<span class="success">✅ 函数调用测试成功!</span>\n\n响应数据:\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${error.message}`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // 视觉模型测试
+        async function runVisionTest() {
+            const resultBox = document.getElementById('vision-result');
+            const button = document.getElementById('run-vision-test');
+            const fileInput = document.getElementById('image-upload');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                resultBox.innerHTML = '<span class="error">❌ 请先选择一张图片</span>';
+                return;
+            }
+            
+            button.disabled = true;
+            resultBox.innerHTML = '正在测试视觉模型...<div class="loading"></div>';
+            
+            try {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = async function(e) {
+                    const base64Image = e.target.result.split(',')[1];
+                    
+                    try {
+                        const response = await fetch(`${API_URL}/chat/completions`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${API_KEY}`
+                            },
+                            body: JSON.stringify({
+                                model: 'gpt-4-vision-preview',
+                                messages: [
+                                    {
+                                        role: 'user',
+                                        content: [
+                                            { type: 'text', text: '这张图片里有什么内容？请详细描述。' },
+                                            {
+                                                type: 'image_url',
+                                                image_url: {
+                                                    url: `data:image/jpeg;base64,${base64Image}`
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            const content = data.choices[0].message.content;
+                            resultBox.innerHTML = `<span class="success">✅ 视觉模型测试成功!</span>\n\n模型描述:\n${content}`;
+                        } else {
+                            resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${JSON.stringify(data, null, 2)}`;
+                        }
+                    } catch (error) {
+                        resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${error.message}`;
+                    } finally {
+                        button.disabled = false;
+                    }
+                };
+                
+                reader.readAsDataURL(file);
+            } catch (error) {
+                resultBox.innerHTML = `<span class="error">❌ 测试失败!</span>\n\n错误信息:\n${error.message}`;
+                button.disabled = false;
+            }
+        }
+
+        // 显示图片预览
+        function showImagePreview() {
+            const fileInput = document.getElementById('image-upload');
+            const imagePreview = document.getElementById('image-preview');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        // 切换标签页
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 移除所有活动标签和内容
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // 激活当前标签和内容
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAdapterStatus();
+            setupTabs();
+            
+            document.getElementById('run-basic-test').addEventListener('click', runBasicTest);
+            document.getElementById('run-stream-test').addEventListener('click', runStreamTest);
+            document.getElementById('run-function-test').addEventListener('click', runFunctionTest);
+            document.getElementById('run-vision-test').addEventListener('click', runVisionTest);
+            document.getElementById('image-upload').addEventListener('change', showImagePreview);
+        });
+
+        function runAllTests() {
+            const resultContainer = document.getElementById('all-tests-result');
+            resultContainer.textContent = '正在开始测试，请稍候...\\n';
+            const evtSource = new EventSource("/run-tests");
+
+            evtSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                if (data.output) {
+                    resultContainer.textContent += data.output;
+                }
+            };
+
+            evtSource.onerror = function(err) {
+                console.error("EventSource failed:", err);
+                resultContainer.textContent += '\\n\\n发生错误，测试中断。请检查后端服务器日志。';
+                evtSource.close();
+            };
+        }
+    </script>
+</body>
+</html> 

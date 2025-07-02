@@ -1,91 +1,100 @@
-import openai
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+综合测试运行脚本 - 使用gemini-2.5-pro
+"""
+
 import os
+import subprocess
 import time
-import httpx
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
 
-# --- 配置 ---
-# 定义代理
-PROXY_URL = "http://127.0.0.1:7890"
+# 清除环境变量并设置代理
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
+os.environ["HTTPS_PROXY"] = "http://127.0.0.1:7890"
 
-# 使用 mounts 参数来配置代理，以兼容不同版本的 httpx
-# 这是更现代且向后兼容的方式
-transport = httpx.HTTPTransport(proxy=PROXY_URL)
-http_client = httpx.Client(transport=transport)
+# 创建Rich控制台
+console = Console()
 
-# 将配置好的http客户端传递给OpenAI
-client = openai.OpenAI(
-    base_url="http://127.0.0.1:5001/v1",
-    api_key="sk-test123456789",
-    http_client=http_client
-)
+def print_header(title):
+    """打印带格式的标题"""
+    console.print(f"\n[bold blue]{'=' * 60}[/bold blue]")
+    console.print(f"[bold white on blue]{title.center(60)}[/bold white on blue]")
+    console.print(f"[bold blue]{'=' * 60}[/bold blue]\n")
 
-MODEL_NAME = "gpt-4o" # 使用一个会映射到 gemini-1.5-pro 的模型
-
-# --- 测试用例 ---
-
-def run_test(test_name, test_function):
-    """一个简单的测试运行器，用于打印状态"""
-    print(f"--- 运行测试: {test_name} ---")
+def run_test(name, command):
+    """运行单个测试"""
+    print_header(f"运行{name}测试")
+    console.print(f"[bold cyan]执行命令:[/bold cyan] {command}")
+    
     try:
-        test_function()
-        print(f"✅ 测试通过: {test_name}\n")
+        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        console.print(Panel(result.stdout, title=f"[green]{name}测试结果", border_style="green"))
         return True
-    except Exception as e:
-        print(f"❌ 测试失败: {test_name}")
-        print(f"   错误: {e}\n")
+    except subprocess.CalledProcessError as e:
+        console.print(Panel(f"错误代码: {e.returncode}\n\n{e.stdout}\n\n{e.stderr}", 
+                           title=f"[red]{name}测试失败", border_style="red"))
         return False
 
-def test_basic_chat():
-    """测试1: 非流式的简单对话"""
-    completion = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "user", "content": "你好！你叫什么名字？"}
-        ],
-        stream=False
-    )
-    response_content = completion.choices[0].message.content
-    print(f"   模型回复: {response_content}")
-    assert len(response_content) > 0, "模型回复不应为空"
-
-def test_streaming_chat():
-    """测试2: 流式传输的简单对话"""
-    print("   模型回复 (流式): ", end="")
-    chunks = []
-    stream = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "user", "content": "请用一句话介绍一下什么是大型语言模型。"}
-        ],
-        stream=True
-    )
-    for chunk in stream:
-        content = chunk.choices[0].delta.content
-        if content:
-            print(content, end="", flush=True)
-            chunks.append(content)
-    print() # 换行
-    assert len(chunks) > 1, "流式响应应该包含多个数据块"
-
-# --- 主函数 ---
 def main():
-    print("=============================")
-    print("  开始对Vertex适配器进行测试 (稳定版)  ")
-    print("=============================\n")
+    """主函数 - 运行所有测试"""
+    print_header("Vertex AI 到 OpenAI API 适配器全面测试")
     
-    # 运行所有测试
-    results = [
-        run_test("基础对话 (非流式)", test_basic_chat),
-        run_test("简单对话 (流式)", test_streaming_chat),
-    ]
+    # 测试结果表格
+    results_table = Table(title="测试结果汇总")
+    results_table.add_column("测试名称", style="cyan")
+    results_table.add_column("状态", style="bold")
     
-    print("-----------------------------")
-    if all(results):
-        print("🎉🎉🎉 恭喜！所有核心测试均已通过！适配器已准备就绪。🎉🎉🎉")
+    # 先启动适配器服务器
+    console.print("[yellow]注意: 请确保适配器服务器已经启动[/yellow]")
+    console.print("[yellow]如果尚未启动，请在另一个终端执行:[/yellow]")
+    console.print("[bold]$env:GOOGLE_APPLICATION_CREDENTIALS=\"\"; $env:HTTPS_PROXY=\"http://127.0.0.1:7890\"; python vertex-openai-adapter/simplest.py[/bold]")
+    
+    input("\n按回车键继续测试...")
+    
+    # 1. 基本测试
+    basic_test = run_test("基本连接", "python vertex-openai-adapter/test_vertexai_direct.py")
+    results_table.add_row("基本连接测试", "[green]通过[/green]" if basic_test else "[red]失败[/red]")
+    
+    # 2. API适配器测试
+    adapter_test = run_test("API适配器", "python vertex-openai-adapter/call_adapter.py")
+    results_table.add_row("API适配器测试", "[green]通过[/green]" if adapter_test else "[red]失败[/red]")
+    
+    # 3. 流式响应测试
+    stream_test = run_test("流式响应", "python vertex-openai-adapter/test_all_features.py --test streaming_chat")
+    results_table.add_row("流式响应测试", "[green]通过[/green]" if stream_test else "[red]失败[/red]")
+    
+    # 4. 视觉功能测试
+    vision_test = run_test("视觉功能", "python vertex-openai-adapter/test_vision.py")
+    results_table.add_row("视觉功能测试", "[green]通过[/green]" if vision_test else "[red]失败[/red]")
+    
+    # 5. 函数调用测试
+    function_test = run_test("函数调用", "python vertex-openai-adapter/test_function_calling.py")
+    results_table.add_row("函数调用测试", "[green]通过[/green]" if function_test else "[red]失败[/red]")
+    
+    # 6. 流式函数调用测试
+    stream_function_test = run_test("流式函数调用", "python vertex-openai-adapter/test_function_calling.py --stream")
+    results_table.add_row("流式函数调用测试", "[green]通过[/green]" if stream_function_test else "[red]失败[/red]")
+    
+    # 打印结果表格
+    console.print("\n")
+    console.print(results_table)
+    
+    # 计算通过率
+    total_tests = 6
+    passed_tests = sum([basic_test, adapter_test, stream_test, vision_test, function_test, stream_function_test])
+    pass_rate = (passed_tests / total_tests) * 100
+    
+    # 打印总结
+    console.print(f"\n[bold]测试完成: {passed_tests}/{total_tests} 通过 ({pass_rate:.1f}%)[/bold]")
+    
+    if passed_tests == total_tests:
+        console.print("\n[bold green]✅ 所有测试通过![/bold green]")
     else:
-        print("🔥🔥🔥 注意：部分测试失败，请检查适配器容器的日志。🔥🔥🔥")
-        # 退出并返回一个非零代码，以便CI/CD等工具可以捕获失败
-        exit(1)
+        console.print(f"\n[bold yellow]⚠️ {total_tests - passed_tests}个测试失败，请检查详细日志[/bold yellow]")
 
 if __name__ == "__main__":
     main() 

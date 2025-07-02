@@ -1,13 +1,14 @@
 import requests
 import json
+import time
 
 # --- 您需要配置的三个关键信息 ---
 
-# 1. 适配器地址 (我们部署在5001端口)
-ADAPTER_URL = "http://127.0.0.1:5001/v1/chat/completions"
+# 1. 适配器地址 (我们部署在5000端口)
+API_URL = "http://127.0.0.1:5000/v1/chat/completions"
 
 # 2. 固定的API Key
-API_KEY = "sk-test123456789"
+API_KEY = "dummy_key"
 
 # 3. 您想要提问的内容和使用的模型
 user_prompt = "请用一句话解释什么是人工智能。"
@@ -15,33 +16,51 @@ model_to_use = "gpt-3.5-turbo" # 这次我们测试 gpt-3.5-turbo, 它应该映�
 
 # --- 标准的OpenAI API调用逻辑 ---
 
-# 设置请求头
-headers = {
-    "Authorization": f"Bearer {API_KEY}",
-    "Content-Type": "application/json"
-}
+def call_adapter():
+    """发送一个简单的请求来测试适配器"""
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {API_KEY}"
+    }
+    data = {
+        "model": "gpt-3.5-turbo",  # This will be mapped
+        "messages": [
+            {"role": "user", "content": "What's the weather like in San Francisco today?"}
+        ],
+        "stream": False
+    }
 
-# 构造请求体
-payload = {
-    "model": model_to_use,
-    "messages": [
-        {"role": "user", "content": user_prompt}
-    ]
-}
+    print(f"Sending request to {API_URL}...")
+    try:
+        response = requests.post(API_URL, headers=headers, json=data)
+        
+        if response.status_code == 200:
+            print("Request successful!")
+            result = response.json()
+            
+            print("---")
+            print("Response JSON:")
+            print(json.dumps(result, indent=2))
+            print("---")
 
-print(f"正在向 {ADAPTER_URL} 发送请求...")
-# 发送POST请求
-try:
-    response = requests.post(ADAPTER_URL, headers=headers, json=payload, timeout=60)
-    response.raise_for_status()  # 检查请求是否成功
+            # Check for content or tool_calls
+            message = result.get("choices", [{}])[0].get("message", {})
+            if "content" in message and message["content"]:
+                print("Model replied with content:")
+                print(message["content"])
+            elif "tool_calls" in message:
+                print("Model replied with a tool call:")
+                print(json.dumps(message["tool_calls"], indent=2))
+            else:
+                print("[WARNING] Model response is empty or in an unexpected format.")
+        else:
+            print(f"Request failed: {response.status_code} {response.reason}")
+            print(response.text)
+            exit(1)
 
-    # 解析并打印响应
-    result = response.json()
-    print("请求成功！")
-    print("---")
-    print("模型回复内容:")
-    print(result["choices"][0]["message"]["content"])
-    print("---")
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        exit(1)
 
-except requests.exceptions.RequestException as e:
-    print(f"请求失败: {e}") 
+if __name__ == "__main__":
+    call_adapter() 
