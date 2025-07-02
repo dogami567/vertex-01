@@ -56,12 +56,13 @@ try:
 except Exception as e:
     logger.error(f"初始化Vertex AI失败: {e}")
 
-# 安全设置 (禁用所有安全过滤器)
+# 安全设置 (根据Google API策略，不能全部设置为BLOCK_NONE)
 safety_settings = {
     HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
     HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
     HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+    # 必须至少有一项不为BLOCK_NONE，我们选择一个影响最小的，并设置为仅屏蔽高风险
+    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
 }
 
 # 辅助函数：将OpenAI请求转换为Vertex AI请求

@@ -182,7 +182,7 @@ def test_streaming_chat():
 def test_vision():
     """测试视觉功能"""
     test_name = "Vision"
-    print(f"\n{'='*20} {test_name} {'='*20}\n")
+    print_header(test_name)
     start_time = time.time()
     success = False
     details = ""
@@ -211,6 +211,10 @@ def test_vision():
             content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
             if content and "error" not in content.lower():
                 success = True
+                # 打印出模型返回的具体内容
+                print("\n--- 模型识别结果 ---")
+                print(content)
+                print("---------------------\n")
                 details = f"Vision model responded. Length: {len(content)}"
             else:
                 details = f"Vision model returned an error or empty content: {content}"
