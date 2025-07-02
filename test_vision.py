@@ -66,7 +66,7 @@ def test_vision():
             }
         ],
         "stream": False,
-        "max_tokens": 1000
+        # "max_tokens": 1000  # 暂时移除此参数，让模型使用默认值，以排查MAX_TOKENS问题
     }
     
     # 发送请求
@@ -144,7 +144,7 @@ def test_vision_stream():
             }
         ],
         "stream": True,
-        "max_tokens": 1000
+        # "max_tokens": 1000 # 暂时移除此参数
     }
     
     # 发送请求

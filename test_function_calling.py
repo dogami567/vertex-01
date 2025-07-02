@@ -112,7 +112,7 @@ def test_function_calling(stream=False):
                 tool_call = message["tool_calls"][0]
                 if tool_call.get("function", {}).get("name") == "get_weather":
                     success = True
-                    details = f"Function call returned: {tool_call['function']['name']}"
+                    details = f"Function call returned: {json.dumps(tool_call, indent=2)}"
                 else:
                     details = f"Incorrect function name in tool call: {result}"
             else:

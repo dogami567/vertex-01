@@ -1,0 +1,382 @@
+2025-07-03 04:46:44,424 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:46:45,682 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.71.128:5000
+2025-07-03 04:46:45,683 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-03 04:46:45,683 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:46:47,224 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:46:47,234 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:46:47,237 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:47:08,753 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\run_all_tests.py', reloading
+2025-07-03 04:47:09,088 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:47:10,458 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:47:10,468 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:47:10,471 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:47:20,216 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:47:21,474 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.71.128:5000
+2025-07-03 04:47:21,474 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-03 04:47:21,475 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:47:22,926 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:47:22,935 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:47:22,937 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:47:27,214 - root - ERROR - Error: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 166, in chat_completions
+    response = model.generate_content(messages, tools=tools, safety_settings=SAFETY_SETTINGS)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 712, in generate_content
+    return self._generate_content(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        contents=contents,
+        ^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        labels=labels,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 829, in _generate_content
+    request = self._prepare_request(
+        contents=contents,
+    ...<4 lines>...
+        labels=labels,
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 575, in _prepare_request
+    contents = _content_types_to_gapic_contents(contents)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 348, in _content_types_to_gapic_contents
+    return [gapic_content_types.Content(content_dict) for content_dict in contents]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\proto\message.py", line 734, in __init__
+    super().__setattr__("_pb", self._meta.pb(**params))
+                               ~~~~~~~~~~~~~^^^^^^^^^^
+TypeError: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+
+2025-07-03 04:47:27,215 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:47:27] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:47:27,225 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:47:27] "POST /v1/chat/completions HTTP/1.1" 200 -
+2025-07-03 04:47:27,229 - root - ERROR - Error: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 585, in _ConvertFieldValuePair
+    raise ParseError(
+    ...<9 lines>...
+    )
+google.protobuf.json_format.ParseError: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 158, in chat_completions
+    messages, tools = convert_messages_to_vertex(request_data.get("messages", []), request_data.get("tools"))
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 96, in convert_messages_to_vertex
+    vertex_tools = [Tool.from_dict(t) for t in tools_spec] if tools_spec else None
+                    ~~~~~~~~~~~~~~^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 2118, in from_dict
+    raw_tool = _dict_to_proto(aiplatform_types.Tool, tool_dict)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 3216, in _dict_to_proto
+    json_format.ParseDict(message_dict, message._pb)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 495, in ParseDict
+    parser.ConvertMessage(js_dict, message, '')
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 540, in ConvertMessage
+    self._ConvertFieldValuePair(value, message, path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 696, in _ConvertFieldValuePair
+    raise ParseError(str(e)) from e
+google.protobuf.json_format.ParseError: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+
+2025-07-03 04:47:27,229 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:47:27] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:47:27,233 - root - ERROR - Error: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 166, in chat_completions
+    response = model.generate_content(messages, tools=tools, safety_settings=SAFETY_SETTINGS)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 712, in generate_content
+    return self._generate_content(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        contents=contents,
+        ^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        labels=labels,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 829, in _generate_content
+    request = self._prepare_request(
+        contents=contents,
+    ...<4 lines>...
+        labels=labels,
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 575, in _prepare_request
+    contents = _content_types_to_gapic_contents(contents)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 348, in _content_types_to_gapic_contents
+    return [gapic_content_types.Content(content_dict) for content_dict in contents]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\proto\message.py", line 734, in __init__
+    super().__setattr__("_pb", self._meta.pb(**params))
+                               ~~~~~~~~~~~~~^^^^^^^^^^
+TypeError: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+
+2025-07-03 04:47:27,234 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:47:27] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:47:30,544 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:47:30] "POST /v1/embeddings HTTP/1.1" 200 -
+2025-07-03 04:47:56,553 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\simplest.py', reloading
+2025-07-03 04:47:56,709 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\simplest.py', reloading
+2025-07-03 04:47:57,056 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:47:58,493 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:47:58,504 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:47:58,506 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:47:58,919 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:48:00,338 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:48:00,347 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:48:00,349 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:48:06,059 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:48:07,316 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.71.128:5000
+2025-07-03 04:48:07,316 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-03 04:48:07,316 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:48:08,814 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:48:08,825 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:48:08,828 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:48:13,681 - root - ERROR - Error: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 166, in chat_completions
+    response = model.generate_content(messages, tools=tools, safety_settings=SAFETY_SETTINGS)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 712, in generate_content
+    return self._generate_content(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        contents=contents,
+        ^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        labels=labels,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 829, in _generate_content
+    request = self._prepare_request(
+        contents=contents,
+    ...<4 lines>...
+        labels=labels,
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 575, in _prepare_request
+    contents = _content_types_to_gapic_contents(contents)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 348, in _content_types_to_gapic_contents
+    return [gapic_content_types.Content(content_dict) for content_dict in contents]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\proto\message.py", line 734, in __init__
+    super().__setattr__("_pb", self._meta.pb(**params))
+                               ~~~~~~~~~~~~~^^^^^^^^^^
+TypeError: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+
+2025-07-03 04:48:13,682 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:48:13] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:48:13,691 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:48:13] "POST /v1/chat/completions HTTP/1.1" 200 -
+2025-07-03 04:48:13,694 - root - ERROR - Error: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 585, in _ConvertFieldValuePair
+    raise ParseError(
+    ...<9 lines>...
+    )
+google.protobuf.json_format.ParseError: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 158, in chat_completions
+    messages, tools = convert_messages_to_vertex(request_data.get("messages", []), request_data.get("tools"))
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 96, in convert_messages_to_vertex
+    vertex_tools = [generative_models.Tool.from_dict(t) for t in tools_spec] if tools_spec else None
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 2118, in from_dict
+    raw_tool = _dict_to_proto(aiplatform_types.Tool, tool_dict)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 3216, in _dict_to_proto
+    json_format.ParseDict(message_dict, message._pb)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 495, in ParseDict
+    parser.ConvertMessage(js_dict, message, '')
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 540, in ConvertMessage
+    self._ConvertFieldValuePair(value, message, path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 696, in _ConvertFieldValuePair
+    raise ParseError(str(e)) from e
+google.protobuf.json_format.ParseError: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+
+2025-07-03 04:48:13,694 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:48:13] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:48:13,698 - root - ERROR - Error: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 166, in chat_completions
+    response = model.generate_content(messages, tools=tools, safety_settings=SAFETY_SETTINGS)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 712, in generate_content
+    return self._generate_content(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        contents=contents,
+        ^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        labels=labels,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 829, in _generate_content
+    request = self._prepare_request(
+        contents=contents,
+    ...<4 lines>...
+        labels=labels,
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 575, in _prepare_request
+    contents = _content_types_to_gapic_contents(contents)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 348, in _content_types_to_gapic_contents
+    return [gapic_content_types.Content(content_dict) for content_dict in contents]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\proto\message.py", line 734, in __init__
+    super().__setattr__("_pb", self._meta.pb(**params))
+                               ~~~~~~~~~~~~~^^^^^^^^^^
+TypeError: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+
+2025-07-03 04:48:13,698 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:48:13] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:48:16,919 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:48:16] "POST /v1/embeddings HTTP/1.1" 200 -
+2025-07-03 04:49:01,776 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\simplest.py', reloading
+2025-07-03 04:49:01,977 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\simplest.py', reloading
+2025-07-03 04:49:02,021 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\simplest.py', reloading
+2025-07-03 04:49:02,328 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:49:02,364 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:49:03,769 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:49:03,779 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:49:03,781 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:49:03,804 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:49:03,813 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:49:03,816 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:49:04,112 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:49:05,482 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:49:05,491 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:49:05,494 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:49:10,527 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:49:11,785 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.71.128:5000
+2025-07-03 04:49:11,785 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-03 04:49:11,786 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:49:13,189 - root - INFO - Vertex AI ³õÊ¼»¯³É¹¦ (ÏîÄ¿: cursor-use-api, ÇøÓò: us-central1)
+2025-07-03 04:49:13,199 - werkzeug - WARNING -  * Debugger is active!
+2025-07-03 04:49:13,201 - werkzeug - INFO -  * Debugger PIN: 664-163-946
+2025-07-03 04:49:17,040 - root - ERROR - Error: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 174, in chat_completions
+    response = model.generate_content(
+        contents,
+        tools=tools,
+        safety_settings=SAFETY_SETTINGS
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 712, in generate_content
+    return self._generate_content(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        contents=contents,
+        ^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        labels=labels,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 829, in _generate_content
+    request = self._prepare_request(
+        contents=contents,
+    ...<4 lines>...
+        labels=labels,
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 575, in _prepare_request
+    contents = _content_types_to_gapic_contents(contents)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 348, in _content_types_to_gapic_contents
+    return [gapic_content_types.Content(content_dict) for content_dict in contents]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\proto\message.py", line 734, in __init__
+    super().__setattr__("_pb", self._meta.pb(**params))
+                               ~~~~~~~~~~~~~^^^^^^^^^^
+TypeError: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+
+2025-07-03 04:49:17,041 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:49:17] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:49:17,050 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:49:17] "POST /v1/chat/completions HTTP/1.1" 200 -
+2025-07-03 04:49:17,053 - root - ERROR - Error: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 585, in _ConvertFieldValuePair
+    raise ParseError(
+    ...<9 lines>...
+    )
+google.protobuf.json_format.ParseError: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 160, in chat_completions
+    tools = [generative_models.Tool.from_dict(t) for t in request_data.get("tools", [])] if request_data.get("tools") else None
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 2118, in from_dict
+    raw_tool = _dict_to_proto(aiplatform_types.Tool, tool_dict)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 3216, in _dict_to_proto
+    json_format.ParseDict(message_dict, message._pb)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 495, in ParseDict
+    parser.ConvertMessage(js_dict, message, '')
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 540, in ConvertMessage
+    self._ConvertFieldValuePair(value, message, path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\google\protobuf\json_format.py", line 696, in _ConvertFieldValuePair
+    raise ParseError(str(e)) from e
+google.protobuf.json_format.ParseError: Message type "google.cloud.aiplatform.v1beta1.Tool" has no field named "type" at "Tool".
+ Available Fields(except extensions): "['functionDeclarations', 'retrieval', 'googleSearch', 'googleSearchRetrieval', 'enterpriseWebSearch', 'codeExecution', 'urlContext']"
+
+2025-07-03 04:49:17,053 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:49:17] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:49:17,056 - root - ERROR - Error: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\vertex-openai-adapter\simplest.py", line 174, in chat_completions
+    response = model.generate_content(
+        contents,
+        tools=tools,
+        safety_settings=SAFETY_SETTINGS
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 712, in generate_content
+    return self._generate_content(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        contents=contents,
+        ^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        labels=labels,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 829, in _generate_content
+    request = self._prepare_request(
+        contents=contents,
+    ...<4 lines>...
+        labels=labels,
+    )
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 575, in _prepare_request
+    contents = _content_types_to_gapic_contents(contents)
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\vertexai\generative_models\_generative_models.py", line 348, in _content_types_to_gapic_contents
+    return [gapic_content_types.Content(content_dict) for content_dict in contents]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\ÖÐ×ª-allone\.venv\Lib\site-packages\proto\message.py", line 734, in __init__
+    super().__setattr__("_pb", self._meta.pb(**params))
+                               ~~~~~~~~~~~~~^^^^^^^^^^
+TypeError: Parameter to MergeFrom() must be instance of same class: expected <class 'Part'> got <class 'vertexai.generative_models._generative_models.Part'>.
+
+2025-07-03 04:49:17,057 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:49:17] "[35m[1mPOST /v1/chat/completions HTTP/1.1[0m" 500 -
+2025-07-03 04:49:20,278 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:49:20] "POST /v1/embeddings HTTP/1.1" 200 -
+2025-07-03 04:50:35,537 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\test_client.py', reloading
+2025-07-03 04:50:35,932 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\test_vision.py', reloading
+2025-07-03 04:50:35,934 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\test_client.py', reloading
+2025-07-03 04:50:36,061 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Administrator\\Desktop\\ÖÐ×ª-allone\\vertex-openai-adapter\\test_function_calling.py', reloading
+2025-07-03 04:50:36,312 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:50:36,318 - werkzeug - INFO -  * Restarting with stat
+2025-07-03 04:50:36,453 - werkzeug - INFO -  * Restarting with stat
