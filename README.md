@@ -1,16 +1,97 @@
-# Vertex AI 到 OpenAI API 适配器
+# Vertex AI to OpenAI API Adapter
 
-这个项目实现了一个简单的适配器，将 Vertex AI API（特别是 Gemini 模型）转换为 OpenAI API 格式。
-这允许使用期望 OpenAI API 的工具和服务能够无缝地与 Vertex AI 模型一起使用。
+This project provides a lightweight adapter to convert OpenAI API requests to Google's Vertex AI API. It allows you to use OpenAI-compatible clients and libraries with Google's powerful Generative Models (like Gemini) without any code changes on the client side.
 
-## 特性
+This adapter is implemented in Python using the Flask framework.
 
-- ✅ 将 OpenAI API 请求转换为 Vertex AI 请求
-- ✅ 支持流式传输（stream）模式，实现打字机效果
-- ✅ 自动映射模型名称（例如 gpt-4o → gemini-2.5-pro）
-- ✅ 支持函数调用（Function calling）功能
-- ✅ 支持视觉模型（Vision models）功能
-- ✅ 简单轻量级设计
+## ✨ Features
+
+- 🔄 **Protocol Translation**: Translates OpenAI Chat Completions API requests to Vertex AI `generate_content` format.
+- 🚀 **Model Mapping**: Maps common OpenAI model names (e.g., `gpt-4`, `gpt-3.5-turbo`) to specified Vertex AI models (e.g., `gemini-2.5-pro`).
+- 💬 **Basic Chat**: Supports standard request/response chat.
+- 🌊 **Streaming**: Supports real-time streaming of responses.
+- 🛠️ **Function Calling**: Supports OpenAI's function calling/tools format.
+- 👁️ **Vision Support**: Supports multimodal requests with images (both URL and base64 encoded).
+- models-listing **Models Listing**: Provides an endpoint (`/v1/models`) that lists available models, ensuring compatibility with clients that perform this check.
+
+## 🛠️ Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+1.  **Python**: Version 3.8 or higher.
+2.  **Google Cloud SDK**: The `gcloud` command-line tool. You can install it from [here](https://cloud.google.com/sdk/docs/install).
+3.  **pip**: Python's package installer.
+
+## ⚙️ Setup & Deployment
+
+Follow these steps to get the adapter up and running.
+
+### 1. Clone the Repository
+
+Clone this project to your local machine.
+
+```bash
+# This step is assumed to be done.
+# git clone <your-repository-url>
+# cd vertex-openai-adapter
+```
+
+### 2. Install Dependencies
+
+Install the required Python packages using `pip`.
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Authenticate with Google Cloud
+
+You need to authenticate your environment to allow the adapter to make calls to the Vertex AI API. The recommended way is to use Application Default Credentials (ADC).
+
+Run the following command and follow the instructions to log in with your Google account:
+
+```bash
+gcloud auth application-default login
+```
+
+This will store your credentials in a local file that the Vertex AI SDK can automatically find.
+
+### 4. Configure Environment (Optional)
+
+The adapter can be configured via environment variables.
+
+-   `PROJECT_ID`: Your Google Cloud Project ID. Defaults to `cursor-use-api`.
+-   `LOCATION`: The Google Cloud region for Vertex AI. Defaults to `us-central1`.
+-   `HTTPS_PROXY`: If you are in a restricted network environment, you may need to set a proxy. Example: `http://127.0.0.1:7890`.
+
+### 5. Run the Adapter
+
+Start the Flask server. The following command ensures that any potentially incorrect global `GOOGLE_APPLICATION_CREDENTIALS` variable is ignored (preferring the ADC from step 3) and sets a proxy if you need one.
+
+**On Windows (PowerShell):**
+
+```powershell
+$env:GOOGLE_APPLICATION_CREDENTIALS=""; $env:HTTPS_PROXY="http://127.0.0.1:7890"; python simplest.py
+```
+
+**On Linux/macOS:**
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS="" HTTPS_PROXY="http://127.0.0.1:7890" python simplest.py
+```
+
+The server will start on `http://127.0.0.1:5000` by default.
+
+## 🔌 Usage
+
+Once the server is running, you can configure your OpenAI-compatible client to use it.
+
+-   **API Base URL / Endpoint**: `http://127.0.0.1:5000/v1`
+    *(Note: Some clients may require you to enter `http://127.0.0.1:5000` and they will add the `/v1` suffix automatically.)*
+-   **API Key**: Any string will work (e.g., `sk-12345`). The adapter does not validate it.
+-   **Model**: Use any of the model names mapped in the script, such as `gpt-4`, `gpt-4-turbo`, or `gpt-4o`.
+
+You can now send requests from your client, and they will be processed by Vertex AI's Gemini model.
 
 ## 版本历史
 
@@ -26,43 +107,6 @@
 | gpt-4-turbo | gemini-2.5-pro |
 | gpt-4 | gemini-2.5-pro |
 | gpt-3.5-turbo | gemini-2.5-flash |
-
-## 安装与使用
-
-### 前提条件
-
-1. 设置 Google Cloud 项目
-2. 启用 Vertex AI API
-3. 设置适当的身份验证
-
-### 使用 Docker
-
-```bash
-# 构建 Docker 镜像
-docker build -t vertex-openai:v0.0.2 .
-
-# 运行容器
-docker run -p 5001:5000 \
-  -v /path/to/your/google_credentials.json:/app/credentials.json \
-  -e GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json \
-  vertex-openai:v0.0.2
-```
-
-### 手动运行
-
-```bash
-# 安装依赖
-pip install -r requirements.txt
-
-# 设置环境变量
-export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/google_credentials.json"
-
-# 在Windows上使用
-# $env:GOOGLE_APPLICATION_CREDENTIALS="C:\path\to\your\google_credentials.json"
-
-# 运行服务
-python simplest.py
-```
 
 ## API 使用示例
 

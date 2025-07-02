@@ -496,12 +496,13 @@ def chat_completions():
             content_list.append(Content(role="user", parts=[Part.from_text("Hello")]))
             logger.warning("没有有效的消息内容，使用默认消息")
         
+        # 根据是否流式，调用不同的处理函数
         if stream:
             logger.info("处理流式请求")
             return stream_response(model, content_list, generation_config, vertex_tools)
         else:
             logger.info("处理普通请求")
-            return normal_response(model, content_list, generation_config, vertex_tools)
+            return normal_response(model, content_list, generation_config, vertex_tools, vertex_model_name)
     except Exception as e:
         logger.error(f"处理请求时出错: {e}")
         logger.error(traceback.format_exc())
@@ -513,8 +514,8 @@ def chat_completions():
             }
         }), 500
 
-def normal_response(model, content_list, generation_config, tools):
-    """处理非流式响应"""
+def normal_response(model, content_list, generation_config, tools, model_name):
+    """处理普通（非流式）响应"""
     try:
         response = model.generate_content(
             content_list,
@@ -522,11 +523,16 @@ def normal_response(model, content_list, generation_config, tools):
             tools=tools,
             safety_settings=safety_settings  # 应用安全设置
         )
-        openai_response = convert_to_openai_format(response, model._model_name)
-        return jsonify(openai_response)
+        return jsonify(convert_to_openai_format(response, model_name))
     except Exception as e:
-        logger.error(f"Error in normal_response: {e}\n{traceback.format_exc()}")
-        return jsonify({"error": f"Failed to generate content: {e}"}), 500
+        logger.error(f"处理普通响应时出错: {str(e)}")
+        # 确保在错误响应中也能使用 model_name
+        error_response = _create_openai_response_format(
+            model_name,  # 使用传入的 model_name
+            f"[ERROR] An unexpected error occurred: {str(e)}",
+            "error"
+        )
+        return jsonify(error_response), 500
 
 def convert_to_openai_format(response, model_name):
     """将Vertex AI的非流式响应转换为OpenAI格式"""
@@ -568,16 +574,25 @@ def convert_to_openai_format(response, model_name):
                     finish_reason = reason_name.lower()
             return _create_openai_response_format(model_name, content, finish_reason)
         except ValueError as e:
-            logger.warning(f"Could not get text from candidate, likely blocked. Error: {e}")
-            content = f"[ERROR] Response content blocked or empty. Finish Reason: {candidate.finish_reason.name}"
-            return _create_openai_response_format(model_name, content, "content_filter")
+            logger.warning(f"无法从候选内容中获取文本，可能已被屏蔽。错误: {e}")
+            # 确保finish_reason已定义
+            if not locals().get('finish_reason'):
+                finish_reason = "error"
+            return _create_openai_response_format(
+                model_name,  # 使用传入的 model_name
+                f"[ERROR] Response content blocked or empty. Finish Reason: {finish_reason}", 
+                finish_reason
+            )
 
     except Exception as e:
         logger.error(f"Error converting to OpenAI format: {e}\n{traceback.format_exc()}")
         return _create_openai_response_format(model_name, f"[ERROR] Conversion failed: {e}", "error")
 
-def _create_openai_response_format(model, content, finish_reason, tool_calls=None):
-    """一个辅助函数，用于创建OpenAI格式的响应字典"""
+def _create_openai_response_format(model_name, content, finish_reason, tool_calls=None):
+    """
+    创建标准格式的OpenAI响应。
+    确保 model_name 参数始终可用。
+    """
     message = {"role": "assistant"}
     if content:
         message["content"] = content
@@ -585,10 +600,10 @@ def _create_openai_response_format(model, content, finish_reason, tool_calls=Non
         message["tool_calls"] = tool_calls
 
     return {
-        "id": f"chatcmpl-{int(time.time() * 1000)}",
+        "id": f"chatcmpl-{uuid.uuid4()}",
         "object": "chat.completion",
         "created": int(time.time()),
-        "model": model,
+        "model": model_name,
         "choices": [{
             "index": 0,
             "message": message,
