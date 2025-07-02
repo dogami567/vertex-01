@@ -1,0 +1,5 @@
+google-cloud-aiplatform>=1.36.0
+vertexai>=0.0.1
+flask>=2.0.0
+requests>=2.31.0
+python-dotenv>=0.20.0 
