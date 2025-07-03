@@ -16,6 +16,7 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -43,4 +44,24 @@ Desktop.ini
 # 特定于项目的忽略项
 *.log
 .pytest_cache/
-.coverage 
+.coverage
+
+# Logs
+*.log
+logs/
+log/
+
+# Database
+*.db
+*.sqlite3
+
+# Google Cloud credentials
+**/google_credentials.json
+**/service-account/
+**/data/
+
+# Other
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local 
