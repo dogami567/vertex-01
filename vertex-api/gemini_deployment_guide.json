@@ -1,0 +1,299 @@
+{
+  "deployment_guide": {
+    "title": "Google Gemini API 部署指南",
+    "version": "1.0.0",
+    "last_updated": "2024-07-01",
+    "overview": "本指南提供了在Windows环境下配置和部署Google Gemini API的详细步骤，包括常见问题及解决方案。",
+    
+    "prerequisites": {
+      "system_requirements": {
+        "os": ["Windows 10/11", "Linux", "macOS"],
+        "python": "3.8 或更高版本",
+        "memory": "至少 4GB RAM",
+        "disk_space": "至少 2GB 可用空间"
+      },
+      "accounts_needed": {
+        "google_cloud": {
+          "description": "需要一个有效的Google Cloud账户",
+          "signup_url": "https://cloud.google.com/"
+        },
+        "billing": {
+          "description": "需要启用结算功能",
+          "note": "某些API调用可能会产生费用"
+        }
+      }
+    },
+    
+    "installation_steps": [
+      {
+        "step": 1,
+        "title": "安装Google Cloud SDK",
+        "description": "下载并安装Google Cloud SDK，这是与Google Cloud服务交互的命令行工具",
+        "commands": [
+          {
+            "windows": {
+              "method": "installer",
+              "url": "https://cloud.google.com/sdk/docs/install-sdk#windows",
+              "steps": [
+                "下载安装程序 (https://cloud.google.com/sdk/docs/install-sdk#windows)",
+                "运行安装程序并按照提示操作",
+                "选择「不设置默认组件」选项",
+                "完成安装后，打开「Google Cloud SDK Shell」"
+              ]
+            },
+            "linux": {
+              "method": "apt/yum",
+              "commands": [
+                "# Debian/Ubuntu",
+                "sudo apt-get update && sudo apt-get install apt-transport-https ca-certificates gnupg",
+                "echo \"deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main\" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list",
+                "curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -",
+                "sudo apt-get update && sudo apt-get install google-cloud-sdk"
+              ]
+            }
+          }
+        ],
+        "verification": {
+          "command": "gcloud --version",
+          "expected_output": "Google Cloud SDK 的版本信息"
+        }
+      },
+      {
+        "step": 2,
+        "title": "初始化Google Cloud SDK",
+        "description": "配置SDK并进行身份验证",
+        "commands": [
+          {
+            "command": "gcloud init",
+            "explanation": "启动交互式设置过程，将引导您完成以下步骤：",
+            "sub_steps": [
+              "登录Google账户（会打开浏览器进行OAuth认证）",
+              "选择一个Google Cloud项目",
+              "配置默认计算区域和可用区"
+            ]
+          }
+        ],
+        "expected_output": "成功初始化的提示，显示已选择的项目和区域",
+        "verification": {
+          "command": "gcloud auth list",
+          "expected_output": "应显示您的Google账户已登录"
+        }
+      },
+      {
+        "step": 3,
+        "title": "设置应用默认凭据(ADC)",
+        "description": "配置本地开发环境的身份验证凭据",
+        "commands": [
+          {
+            "command": "gcloud auth application-default login",
+            "explanation": "这将打开浏览器进行OAuth认证，并将凭据保存在本地"
+          }
+        ],
+        "verification": {
+          "command": "echo %APPDATA%\\gcloud\\application_default_credentials.json",
+          "expected_output": "应显示凭据文件的路径"
+        },
+        "notes": "这一步创建的凭据文件将被Google Cloud客户端库自动使用"
+      },
+      {
+        "step": 4,
+        "title": "启用必要的API",
+        "description": "在Google Cloud Console中启用Vertex AI API",
+        "steps": [
+          "访问 https://console.cloud.google.com/apis/library/aiplatform.googleapis.com",
+          "确保选择了正确的项目",
+          "点击「启用」按钮",
+          "等待API启用完成"
+        ],
+        "verification": {
+          "ui_check": "在Google Cloud Console中，Vertex AI API的状态应显示为「已启用」"
+        }
+      },
+      {
+        "step": 5,
+        "title": "安装Python依赖",
+        "description": "安装必要的Python库",
+        "commands": [
+          {
+            "command": "pip install google-cloud-aiplatform vertexai google-generativeai requests",
+            "explanation": "安装Google Cloud和Vertex AI的Python客户端库"
+          }
+        ],
+        "verification": {
+          "command": "pip list | findstr \"google-cloud-aiplatform vertexai google-generativeai\"",
+          "expected_output": "应显示已安装的库及其版本"
+        }
+      }
+    ],
+    
+    "configuration": {
+      "environment_variables": {
+        "proxy_settings": {
+          "description": "如果您在中国或其他需要代理的地区，可能需要设置代理",
+          "windows_cmd": {
+            "set_command": "set HTTPS_PROXY=http://127.0.0.1:7890",
+            "explanation": "将7890替换为您的实际代理端口"
+          },
+          "windows_powershell": {
+            "set_command": "$env:HTTPS_PROXY=\"http://127.0.0.1:7890\"",
+            "explanation": "将7890替换为您的实际代理端口"
+          },
+          "linux_mac": {
+            "set_command": "export HTTPS_PROXY=http://127.0.0.1:7890",
+            "explanation": "将7890替换为您的实际代理端口"
+          }
+        },
+        "credentials": {
+          "description": "默认使用ADC认证，无需设置GOOGLE_APPLICATION_CREDENTIALS变量",
+          "note": "如果需要使用服务账号，可以设置GOOGLE_APPLICATION_CREDENTIALS指向JSON密钥文件"
+        }
+      },
+      "project_settings": {
+        "project_id": {
+          "description": "您的Google Cloud项目ID",
+          "how_to_find": "在Google Cloud Console的首页或设置中可以找到",
+          "example": "cursor-use-api"
+        },
+        "location": {
+          "description": "Vertex AI服务的区域",
+          "recommended": "us-central1",
+          "note": "不同区域可能支持不同的模型，请参考文档"
+        },
+        "model_id": {
+          "description": "要使用的Gemini模型ID",
+          "options": [
+            {
+              "id": "gemini-2.5-pro",
+              "description": "最强大的Gemini 2.5版本，支持多种复杂任务"
+            },
+            {
+              "id": "gemini-1.5-pro",
+              "description": "Gemini 1.5专业版，适合大多数应用场景"
+            },
+            {
+              "id": "gemini-1.5-flash",
+              "description": "Gemini 1.5快速版，响应更快但能力略低"
+            }
+          ]
+        }
+      }
+    },
+    
+    "code_examples": {
+      "basic_usage": {
+        "description": "基本的Gemini API调用示例",
+        "python_code": "import vertexai\nfrom vertexai.generative_models import GenerativeModel\n\n# 初始化Vertex AI\nvertexai.init(project=\"YOUR_PROJECT_ID\", location=\"us-central1\")\n\n# 加载模型\nmodel = GenerativeModel(\"gemini-2.5-pro\")\n\n# 发送提示并获取回复\nresponse = model.generate_content(\"你好，请用中文写一首关于夏天的五言绝句。\")\nprint(response.text)"
+      },
+      "chat_session": {
+        "description": "创建聊天会话示例",
+        "python_code": "import vertexai\nfrom vertexai.generative_models import GenerativeModel, ChatSession\n\n# 初始化Vertex AI\nvertexai.init(project=\"YOUR_PROJECT_ID\", location=\"us-central1\")\n\n# 加载模型\nmodel = GenerativeModel(\"gemini-2.5-pro\")\n\n# 创建聊天会话\nchat = ChatSession(model)\n\n# 发送第一条消息\nresponse = chat.send_message(\"你好，请介绍一下自己\")\nprint(response.text)\n\n# 发送第二条消息\nresponse = chat.send_message(\"你能帮我解决什么问题?\")\nprint(response.text)"
+      },
+      "streaming_response": {
+        "description": "流式输出示例",
+        "python_code": "import vertexai\nfrom vertexai.generative_models import GenerativeModel\n\n# 初始化Vertex AI\nvertexai.init(project=\"YOUR_PROJECT_ID\", location=\"us-central1\")\n\n# 加载模型\nmodel = GenerativeModel(\"gemini-2.5-pro\")\n\n# 流式生成内容\nresponses = model.generate_content(\"请用中文写一个关于人工智能的短段落。\", stream=True)\n\n# 处理流式响应\nfor response in responses:\n    print(response.text, end=\"\", flush=True)"
+      }
+    },
+    
+    "common_issues": [
+      {
+        "issue": "网络连接错误",
+        "error_message": "503 failed to connect to all addresses",
+        "possible_causes": [
+          "网络连接问题",
+          "防火墙阻止",
+          "需要代理但未设置"
+        ],
+        "solutions": [
+          "检查网络连接是否正常",
+          "设置HTTPS_PROXY环境变量",
+          "确认代理服务器是否正常运行",
+          "尝试使用不同的代理服务器"
+        ]
+      },
+      {
+        "issue": "认证错误",
+        "error_message": "Unauthorized",
+        "possible_causes": [
+          "未完成gcloud auth application-default login",
+          "凭据已过期",
+          "项目没有启用结算"
+        ],
+        "solutions": [
+          "运行 gcloud auth application-default login 重新认证",
+          "确认项目已启用结算功能",
+          "检查IAM权限设置"
+        ]
+      },
+      {
+        "issue": "模型不可用",
+        "error_message": "Publisher Model was not found or your project does not have access to it",
+        "possible_causes": [
+          "模型ID拼写错误",
+          "所选区域不支持该模型",
+          "项目没有访问该模型的权限"
+        ],
+        "solutions": [
+          "检查模型ID是否正确",
+          "尝试使用不同的区域",
+          "确认项目已启用Vertex AI API",
+          "检查配额和使用限制"
+        ]
+      },
+      {
+        "issue": "内容被安全过滤器拦截",
+        "error_message": "Cannot get the response text. Response candidate content has no parts (and thus no text). The candidate is likely blocked by the safety filters.",
+        "possible_causes": [
+          "生成的内容触发了安全过滤器",
+          "提示词可能包含敏感内容"
+        ],
+        "solutions": [
+          "修改提示词，避免敏感话题",
+          "调整生成参数，如降低temperature值",
+          "尝试使用不同的提示词表达方式"
+        ]
+      }
+    ],
+    
+    "testing": {
+      "recommended_tests": [
+        {
+          "test_name": "基本连接测试",
+          "purpose": "验证API连接和认证是否正常",
+          "command": "python -c \"import vertexai; vertexai.init(project='YOUR_PROJECT_ID', location='us-central1'); print('连接成功')\"",
+          "expected_output": "连接成功"
+        },
+        {
+          "test_name": "模型可用性测试",
+          "purpose": "验证指定的模型是否可用",
+          "command": "python gemini_comprehensive_test.py",
+          "expected_output": "至少有部分测试成功完成"
+        }
+      ],
+      "comprehensive_test_file": "gemini_comprehensive_test.py",
+      "description": "提供的综合测试脚本可测试多种功能，包括基本调用、聊天会话、参数设置、流式输出等"
+    },
+    
+    "best_practices": [
+      {
+        "title": "使用代理",
+        "description": "在中国等地区，设置代理通常是必要的",
+        "recommendation": "使用稳定的代理服务，并正确设置环境变量"
+      },
+      {
+        "title": "错误处理",
+        "description": "添加适当的错误处理代码",
+        "recommendation": "捕获并处理可能的异常，提供友好的错误信息"
+      },
+      {
+        "title": "凭据管理",
+        "description": "正确管理认证凭据",
+        "recommendation": "优先使用ADC认证方式，避免在代码中硬编码凭据"
+      },
+      {
+        "title": "模型选择",
+        "description": "根据需求选择合适的模型",
+        "recommendation": "对于一般任务，可以使用flash版本；对于复杂任务，使用pro版本"
+      }
+    ]
+  }
+} 

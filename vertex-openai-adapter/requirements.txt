@@ -1,0 +1,12 @@
+flask==2.0.1
+gevent
+google-cloud-aiplatform>=1.57.0
+python-dotenv==0.19.0
+flask-cors==3.0.10
+vertexai==1.71.1
+Werkzeug==2.3.7
+openai==1.14.0
+httpx==0.26.0
+regex==2024.5.15
+protobuf
+google 

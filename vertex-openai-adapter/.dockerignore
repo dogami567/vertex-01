@@ -1,0 +1,10 @@
+# 忽略Python的缓存文件
+__pycache__/
+
+# 忽略虚拟环境文件夹
+.venv/
+venv/
+
+# 忽略特定的IDE或编辑器配置
+.vscode/
+.idea/ 
